@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme and Joke Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            height: 100%;
+            background-image: url('C:/Users/nandh/OneDrive/Desktop/Meme - Random/background.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .inner-box {
+            background-color: rgba(255, 255, 255, 0.8); /* Slight transparency for readability */
+            width: 40%;
+            height: 70%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            align-items: center;
+            justify-content: space-around;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 1);
+        }
+
+        .inner-box button {
+            cursor: pointer;
+        }
+
+        .inner-box button:hover {
+            background-color: #156481;
+            transform: scale(1.1);
+        }
+
+        #memeImage {
+            max-width: 100%; /* Ensure image scales within its container */
+            max-height: 80%; /* Ensure image scales within its container */
+            width: auto; /* Let the image maintain its aspect ratio */
+            height: auto; /* Let the image maintain its aspect ratio */
+            padding: 10px;
+        }
+
+        #jokeText {
+            text-align: center;
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 10px;
+            border-radius: 30px;
+            margin: 5px 0;
+            background-color: #2596be;
+            border: none;
+            color: white;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="inner-box">
+            <img id="memeImage" src="https://preview.redd.it/fn2t4mydo3jb1.png?width=960&crop=smart&auto=webp&s=826dae7106aefd6ccdc3bfef0f0193529b952215" alt="random Meme">
+            <p id="jokeText">Click for a Meme or Joke!</p>
+            <button>New Meme/Joke</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        const memeUrl = "https://meme-api.com/gimme/2"; // Meme API
+        const redditMemeUrl = "https://www.reddit.com/r/dankmemes/random/.json"; // Reddit random meme
+        const jokeApiUrl = "https://v2.jokeapi.dev/joke/Any?type=single"; // Joke API (WebKnox or JokeAPI)
+
+        let btn = document.querySelector("button");
+
+        btn.addEventListener("click", async () => {
+            let randomChoice = Math.floor(Math.random() * 2); // Randomly choose between meme and joke
+
+            if (randomChoice === 0) {
+                // Fetch Meme
+                let link = await getMeme();
+                let img = document.querySelector("#memeImage");
+                img.setAttribute("src", link);
+                document.querySelector("#jokeText").textContent = "Click for a Meme or Joke!";
+            } else {
+                // Fetch Joke
+                let joke = await getJoke();
+                document.querySelector("#memeImage").setAttribute("src", "");
+                document.querySelector("#jokeText").textContent = joke;
+            }
+        });
+
+        async function getMeme() {
+            try {
+                // Random Meme from Meme API
+                let res = await axios.get(memeUrl);
+                return res.data.memes[0].url;
+            } catch (e) {
+                console.log("Error fetching meme:", e);
+                return "https://via.placeholder.com/500?text=No+Meme+Found";
+            }
+        }
+
+        async function getRedditMeme() {
+            try {
+                // Random Meme from Reddit (DankMemes)
+                let res = await axios.get(redditMemeUrl);
+                return res.data[0].data.children[0].data.url;
+            } catch (e) {
+                console.log("Error fetching Reddit meme:", e);
+                return "https://via.placeholder.com/500?text=No+Meme+Found";
+            }
+        }
+
+        async function getJoke() {
+            try {
+                let res = await axios.get(jokeApiUrl);
+                return res.data.joke || "No joke found!";
+            } catch (e) {
+                console.log("Error fetching joke:", e);
+                return "Error fetching joke!";
+            }
+        }
+    </script>
+</body>
+</html>

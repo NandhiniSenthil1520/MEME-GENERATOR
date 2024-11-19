@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .container {
+            height: 100%;
+            background-image: url('C:/Users/nandh/OneDrive/Desktop/Meme - Random/background.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .inner-box {
+            background-color: #fff;
+            width: 40%;
+            height: 70%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            align-items: center;
+            justify-content: space-around;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 1);
+        }
+
+        .inner-box button {
+            cursor: pointer;
+        }
+
+        .inner-box button:hover {
+            background-color: #156481;
+            transform: scale(1.1);
+        }
+
+        #memeImage {
+            max-width: 100%; /* Ensure image scales within its container */
+            max-height: 80%; /* Ensure image scales within its container */
+            width: auto; /* Let the image maintain its aspect ratio */
+            height: auto; /* Let the image maintain its aspect ratio */
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 10px;
+            border-radius: 30px;
+            margin: 5px 0;
+            background-color: #2596be;
+            border: none;
+            color: white;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="inner-box">
+            <img id="memeImage" src="https://preview.redd.it/fn2t4mydo3jb1.png?width=960&crop=smart&auto=webp&s=826dae7106aefd6ccdc3bfef0f0193529b952215" alt="random Meme">
+            <button>New Meme</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        const url = "https://meme-api.com/gimme/2";
+
+        let btn = document.querySelector("button");
+
+        btn.addEventListener("click", async () => {
+            let link = await getImg();
+            let img = document.querySelector("#memeImage");
+            img.setAttribute("src", link);
+        });
+
+        async function getImg() {
+            try {
+                let res = await axios.get(url);
+                return res.data.memes[0].url;
+            } catch (e) {
+                console.log("error - ", e);
+                return "NO Img Found";
+            }
+        }
+    </script>
+</body>
+</html>
